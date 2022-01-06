@@ -1,16 +1,8 @@
-import {
-  Cancel,
-  Close,
-  DarkMode,
-  LightMode,
-  Search,
-} from "@mui/icons-material";
+import { Close, DarkMode, LightMode, Search } from "@mui/icons-material";
 import {
   AppBar,
-  Grid,
   IconButton,
   InputBase,
-  TextField,
   Toolbar,
   Tooltip,
   Typography,
@@ -23,14 +15,17 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { ThemeModeContext } from "../../contexts/ThemeModeContext";
 
-const Navbar = ({ query, handleQueryChange }) => {
+const Navbar = ({ query, handleSearchChange }) => {
   const theme = useTheme();
+  const small = useMediaQuery(theme.breakpoints.down("sm"));
   const [mode, toggleMode] = useContext(ThemeModeContext);
   const [isSearch, setIsSearch] = useState(false);
-  const small = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log(small);
 
-  const toggleSearchState = () => setIsSearch((prev) => !prev);
+  const toggleSearchState = () => {
+    if (isSearch) handleSearchChange("");
+    setIsSearch((prev) => !prev);
+  };
+  const handleQueryChange = (e) => handleSearchChange(e.target.value);
 
   return (
     <AppBar
@@ -44,6 +39,7 @@ const Navbar = ({ query, handleQueryChange }) => {
           borderRadius: 5,
           color: theme.palette.text.primary,
           padding: 1,
+          boxShadow: 4,
         })}
       >
         {small && isSearch ? null : (
@@ -68,13 +64,13 @@ const Navbar = ({ query, handleQueryChange }) => {
           <Box
             display="flex"
             alignItems="center"
+            justifyContent="flex-end"
             sx={(theme) => ({
               mr: 1,
-              backgroundColor: theme.palette.divider,
+              backgroundColor: "rgba(255,255,255,0.25)",
               borderRadius: 2,
               px: 2,
               py: 1,
-              width: small ? "100%" : "auto",
             })}
           >
             <InputBase
@@ -82,7 +78,10 @@ const Navbar = ({ query, handleQueryChange }) => {
               onChange={handleQueryChange}
               variant="outlined"
               placeholder="Search . . ."
-              sx={{ width: "100%" }}
+              sx={{
+                width: "100%",
+                transition: "0.3s ease",
+              }}
             />
             <Close
               sx={{
