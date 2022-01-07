@@ -1,75 +1,78 @@
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState, useEffect } from "react";
 import { customCall, searchAPI } from "../../controllers/api";
+import ErrorComponent from "../Misc/Error";
+import LoadingComponent from "../Misc/Loading";
+import WaitComponent from "../Misc/Wait";
 import Navbar from "../Navbar/Navbar";
 import Collection from "./Collection";
 
 const HomeComponent = () => {
-  const [search, setSearch] = useState("");
-  const [debounce, setDebounce] = useState(search);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [getMoreLoading, setGetMoreLoading] = useState(false);
   const [nextlink, setNextLink] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSearchChange = (query) => {
-    setDebounce(query);
-  };
-
+  // Get more images
   const handleGetMore = () => {
     if (nextlink) {
-      setLoading(true);
+      setGetMoreLoading(true);
       customCall(nextlink)
         .then((res) => {
           handleImageListUpdate(res.data);
+          setError("");
+          setGetMoreLoading(false);
         })
         .catch((e) => {
           console.log(e);
+          setError(e.message);
+          setGetMoreLoading(false);
         });
     }
   };
 
+  // Handle List update
   const handleImageListUpdate = (data) => {
-    setImages(data.collection.items);
+    if (!data.collection) {
+      setImages([]);
+      setNextLink("");
+      return;
+    }
+    setImages((prev) => [...prev, ...data.collection.items]);
     if (data.collection.links) {
       const next = data.collection.links.find((o) => o.rel === "next");
       setNextLink(next.href);
+    } else {
+      setNextLink("");
     }
     setLoading(false);
   };
 
-  useEffect(() => {}, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearch(debounce);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [debounce]);
-
-  useEffect(() => {
-    // API CALL
-    setLoading(true);
-    searchAPI(search)
-      .then((res) => {
-        handleImageListUpdate(res.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, [search]);
-
   return (
     <>
-      <Navbar query={search} handleSearchChange={handleSearchChange} />
-      <Collection images={images} />
-      <Box display="flex" justifyContent="center" alignItems="center">
-        {loading ? (
-          <CircularProgress />
-        ) : (
+      <Navbar
+        handleListUpdate={handleImageListUpdate}
+        setLoading={setLoading}
+        loading={loading}
+        setError={setError}
+      />
+      {!images.length && !loading ? (
+        <ErrorComponent message="Could not find any images. Try a different query!" />
+      ) : loading ? (
+        <WaitComponent message="Hold your horses. . ." />
+      ) : (
+        <Collection images={images} />
+      )}
+      {getMoreLoading ? (
+        <LoadingComponent />
+      ) : !loading && nextlink ? (
+        <Box display="flex" justifyContent="center" alignItems="center">
           <Button onClick={handleGetMore}>Get More</Button>
-        )}
-      </Box>
+        </Box>
+      ) : null}
+      {/* {error && <ErrorComponent message={error} />} */}
     </>
   );
 };

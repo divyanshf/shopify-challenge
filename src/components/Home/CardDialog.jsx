@@ -7,15 +7,11 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  Grid,
   Typography,
   Box,
 } from "@mui/material";
 
 const CardDialog = ({ data, image, open, handleClose, functions }) => {
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString() + ` (${new Date(date).toDateString()})`;
-
   return (
     <Dialog open={open} onClose={handleClose} scroll="body">
       <DialogTitle>{data.title}</DialogTitle>
@@ -29,7 +25,7 @@ const CardDialog = ({ data, image, open, handleClose, functions }) => {
         <Box display="flex" alignItems="flex-start">
           <Event sx={{ mr: 1 }} color="primary" />
           <Typography color="text.disabled">
-            {formatDate(data.date_created)}
+            {functions.formatDate(data.date_created)}
           </Typography>
         </Box>
       </DialogContent>

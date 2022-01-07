@@ -1,31 +1,62 @@
 import { Close, DarkMode, LightMode, Search } from "@mui/icons-material";
 import {
   AppBar,
+  Grid,
   IconButton,
   InputBase,
+  LinearProgress,
   Toolbar,
   Tooltip,
   Typography,
-  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { orange, yellow } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ThemeModeContext } from "../../contexts/ThemeModeContext";
+import { searchAPI } from "../../controllers/api";
 
-const Navbar = ({ query, handleSearchChange }) => {
+const Navbar = ({ handleListUpdate, setLoading, setError, loading }) => {
+  const [search, setSearch] = useState("");
+  const [debounce, setDebounce] = useState("");
   const theme = useTheme();
-  const small = useMediaQuery(theme.breakpoints.down("sm"));
   const [mode, toggleMode] = useContext(ThemeModeContext);
   const [isSearch, setIsSearch] = useState(false);
 
   const toggleSearchState = () => {
-    if (isSearch) handleSearchChange("");
+    if (isSearch) setDebounce("");
     setIsSearch((prev) => !prev);
   };
-  const handleQueryChange = (e) => handleSearchChange(e.target.value);
+
+  // Handle query change
+  const handleQueryChange = (e) => {
+    setDebounce(e.target.value);
+  };
+
+  // Handle Debounce
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setSearch(debounce);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [debounce]);
+
+  // Handle API call
+  useEffect(() => {
+    handleListUpdate({});
+    console.log(search);
+    searchAPI(search)
+      .then((res) => {
+        handleListUpdate(res.data);
+        setError("");
+      })
+      .catch((e) => {
+        console.log(e);
+        setError(e.message);
+      });
+  }, [search]);
 
   return (
     <AppBar
@@ -35,71 +66,104 @@ const Navbar = ({ query, handleSearchChange }) => {
     >
       <Toolbar
         sx={(theme) => ({
+          position: "relative",
           backgroundColor: theme.palette.background.paper,
-          borderRadius: 5,
+          borderRadius: 2,
           color: theme.palette.text.primary,
           padding: 1,
           boxShadow: 4,
         })}
       >
-        {small && isSearch ? null : (
-          <Link
-            to="/"
-            style={{
-              textDecoration: "none",
-              color: theme.palette.text.primary,
-            }}
-          >
-            <Typography variant="h6">Spacestagram</Typography>
-          </Link>
-        )}
-        {small && isSearch ? null : <Box sx={{ flexGrow: 1, mx: 2 }} />}
-        {!isSearch ? (
-          <Tooltip title="Search" sx={{ mr: 1 }}>
-            <IconButton onClick={toggleSearchState}>
-              <Search />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Box
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Link
+              to="/"
+              style={{
+                textDecoration: "none",
+                color: theme.palette.text.primary,
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src="/logo192.png"
+                alt="Spacestagram"
+                style={{ width: "50px" }}
+              />
+              <Typography variant="h6" sx={{ ml: 1 }}>
+                Spacestagram
+              </Typography>
+            </Link>
+          </Grid>
+          <Grid
+            item
             display="flex"
             alignItems="center"
             justifyContent="flex-end"
-            sx={(theme) => ({
-              mr: 1,
-              backgroundColor: "rgba(255,255,255,0.25)",
-              borderRadius: 2,
-              px: 2,
-              py: 1,
-            })}
+            xs={true}
           >
-            <InputBase
-              value={query}
-              onChange={handleQueryChange}
-              variant="outlined"
-              placeholder="Search . . ."
-              sx={{
-                width: "100%",
-                transition: "0.3s ease",
-              }}
-            />
-            <Close
-              sx={{
-                "&:hover": { cursor: "pointer" },
-              }}
-              onClick={toggleSearchState}
-            />
-          </Box>
-        )}
-        <Tooltip title={mode === "light" ? "Dark Theme" : "Light Theme"}>
-          <IconButton onClick={toggleMode}>
-            {mode === "light" ? (
-              <DarkMode sx={{ color: yellow[800] }} />
+            {!isSearch ? (
+              <Tooltip title="Search" sx={{ mr: 1 }}>
+                <IconButton onClick={toggleSearchState}>
+                  <Search />
+                </IconButton>
+              </Tooltip>
             ) : (
-              <LightMode sx={{ color: orange[500] }} />
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-end"
+                sx={(theme) => ({
+                  width: "100%",
+                  minWidth: "5ch",
+                  maxWidth: "20ch",
+                  mr: 1,
+                  backgroundColor: "rgba(255,255,255,0.25)",
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                })}
+              >
+                <InputBase
+                  value={debounce}
+                  onChange={handleQueryChange}
+                  variant="outlined"
+                  placeholder="Search . . ."
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                <Close
+                  sx={{
+                    "&:hover": { cursor: "pointer" },
+                  }}
+                  onClick={toggleSearchState}
+                />
+              </Box>
             )}
-          </IconButton>
-        </Tooltip>
+            <Tooltip title={mode === "light" ? "Dark Theme" : "Light Theme"}>
+              <IconButton onClick={toggleMode}>
+                {mode === "light" ? (
+                  <DarkMode sx={{ color: yellow[800] }} />
+                ) : (
+                  <LightMode sx={{ color: orange[500] }} />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Grid>
+        </Grid>
+        {loading && (
+          <LinearProgress
+            color="success"
+            sx={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              overflow: "hidden",
+            }}
+          />
+        )}
       </Toolbar>
     </AppBar>
   );

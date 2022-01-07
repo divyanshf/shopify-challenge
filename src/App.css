@@ -7,6 +7,27 @@
   pointer-events: none;
 }
 
+.theme-load {
+  animation: theme-load-animation 1200ms ease-in-out;
+}
+
+@keyframes theme-load-animation {
+  0% {
+    left: -100vw;
+  }
+  50% {
+    left: 0;
+  }
+  100% {
+    left: 100vw;
+  }
+}
+
+.loader-box {
+  width: 10px;
+  margin: auto 0.1rem;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

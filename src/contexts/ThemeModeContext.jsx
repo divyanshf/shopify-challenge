@@ -1,26 +1,47 @@
 import { Brightness4, DarkMode, LightMode } from "@mui/icons-material";
 import { grey, orange, yellow } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import { createContext, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 export const ThemeModeContext = createContext();
 
 export const ThemeModeProvider = ({ children, themeMode }) => {
   const [mode, setMode] = useState(themeMode);
-  const [loading, setLoading] = useState(false);
+  const [tempMode, setTempMode] = useState(mode);
+  const backdrop = useRef(null);
   const toggleMode = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setMode((prev) => {
-        localStorage.setItem("mode", themeMode === "light" ? "dark" : "light");
-        return prev === "light" ? "dark" : "light";
-      });
-      setLoading(false);
-    }, 500);
+    setTempMode((prev) => {
+      localStorage.setItem("mode", themeMode === "light" ? "dark" : "light");
+      return prev === "light" ? "dark" : "light";
+    });
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMode(tempMode);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [tempMode]);
+
+  useLayoutEffect(() => {
+    if (backdrop && backdrop.current) {
+      backdrop.current.classList.add("theme-load");
+      setTimeout(() => {
+        backdrop.current.classList.remove("theme-load");
+      }, 1000);
+    }
+  }, [tempMode]);
+
   return (
     <ThemeModeContext.Provider value={[mode, toggleMode]}>
       <Box
+        ref={backdrop}
         position="fixed"
         width="100%"
         height="100%"
@@ -29,11 +50,8 @@ export const ThemeModeProvider = ({ children, themeMode }) => {
         justifyContent="center"
         sx={{
           top: 0,
-          left: 0,
-          backgroundColor: mode === "light" ? grey[50] : grey[900],
+          left: "-100%",
           zIndex: 10000,
-          opacity: loading ? 1 : 0,
-          transition: "0.8s ease",
           pointerEvents: "none",
         }}
       >
