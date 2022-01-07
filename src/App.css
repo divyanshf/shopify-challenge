@@ -8,18 +8,22 @@
 }
 
 .theme-load {
-  animation: theme-load-animation 1200ms ease-in-out;
+  transform-origin: bottom;
+  animation: theme-load-animation 1.5s linear;
 }
 
 @keyframes theme-load-animation {
   0% {
-    left: -100vw;
+    transform: rotate(-135deg);
   }
-  50% {
-    left: 0;
+  40% {
+    transform: rotate(0);
+  }
+  60% {
+    transform: rotate(0);
   }
   100% {
-    left: 100vw;
+    transform: rotate(135deg);
   }
 }
 
