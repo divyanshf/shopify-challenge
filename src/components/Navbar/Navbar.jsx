@@ -85,7 +85,7 @@ const Navbar = ({ handleListUpdate, setLoading, setError, loading }) => {
               }}
             >
               <img
-                src="/logo192.png"
+                src={process.env.PUBLIC_URL + "/logo192.png"}
                 alt="Spacestagram"
                 style={{ width: "50px" }}
               />

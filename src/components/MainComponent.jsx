@@ -1,13 +1,13 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import HomeComponent from "./Home/HomeComponent";
 
 const MainComponent = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
         <Route path="/" exact element={<HomeComponent />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 };
 

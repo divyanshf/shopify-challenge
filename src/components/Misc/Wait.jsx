@@ -12,7 +12,7 @@ const WaitComponent = ({ message }) => {
       >
         <CardMedia
           component="img"
-          image="/wait.svg"
+          image={process.env.PUBLIC_URL + "/wait.svg"}
           sx={{ width: "100%", maxWidth: 250 }}
         />
       </Grid>

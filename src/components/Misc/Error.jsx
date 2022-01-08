@@ -12,7 +12,7 @@ const ErrorComponent = ({ message }) => {
       >
         <CardMedia
           component="img"
-          image="/sad.svg"
+          image={process.env.PUBLIC_URL + "/sad.svg"}
           sx={{ width: "100%", maxWidth: 400 }}
         />
       </Grid>

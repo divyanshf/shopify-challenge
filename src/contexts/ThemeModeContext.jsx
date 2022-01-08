@@ -13,10 +13,12 @@ import {
 export const ThemeModeContext = createContext();
 
 export const ThemeModeProvider = ({ children, themeMode }) => {
-  const [mode, setMode] = useState(themeMode);
-  const [tempMode, setTempMode] = useState(mode);
+  const [mode, setMode] = useState(getTheme());
+  const [tempMode, setTempMode] = useState(getTheme());
   const [open, setOpen] = useState(false);
   const icon = useRef(null);
+
+  // Toggle Theme
   const toggleMode = () => {
     setTempMode((prev) => {
       localStorage.setItem("mode", themeMode === "light" ? "dark" : "light");
@@ -24,6 +26,27 @@ export const ThemeModeProvider = ({ children, themeMode }) => {
     });
     setOpen(true);
   };
+
+  // Get theme from local storage
+  function getUserTheme() {
+    return localStorage.getItem("mode");
+  }
+
+  // Get system theme
+  // Works like a charm on mozilla but not good on chrome
+  function getSystemTheme() {
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return isDark ? "dark" : "light";
+  }
+
+  // Get theme
+  function getTheme() {
+    let mode = getUserTheme();
+    if (!mode) {
+      mode = getSystemTheme();
+    }
+    return mode;
+  }
 
   useEffect(() => {
     const timeout = setTimeout(() => {

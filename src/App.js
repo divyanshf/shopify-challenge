@@ -64,29 +64,8 @@ function ThemedComponent() {
 
 // App
 function App() {
-  // Get theme from local storage
-  function getUserTheme() {
-    return localStorage.getItem("mode");
-  }
-
-  // Get system theme
-  // Works like a charm on mozilla but not good on chrome
-  function getSystemTheme() {
-    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return isDark ? "dark" : "light";
-  }
-
-  // Get theme
-  function getTheme() {
-    let mode = getUserTheme();
-    if (!mode) {
-      mode = getSystemTheme();
-    }
-    return mode;
-  }
-
   return (
-    <ThemeModeProvider themeMode={getTheme()}>
+    <ThemeModeProvider>
       <ThemedComponent />
     </ThemeModeProvider>
   );
