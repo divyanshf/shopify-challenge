@@ -46,7 +46,6 @@ const Navbar = ({ handleListUpdate, setLoading, setError, loading }) => {
   // Handle API call
   useEffect(() => {
     handleListUpdate({});
-    console.log(search);
     searchAPI(search)
       .then((res) => {
         handleListUpdate(res.data);
