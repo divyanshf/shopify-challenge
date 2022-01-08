@@ -11,6 +11,7 @@ export const searchAPI = _.memoize(async (query) => {
 });
 
 export const customCall = _.memoize(async (url) => {
+  url = url.replace(/^http:\/\//i, "https://");
   const res = await axios.get(url);
   return res;
 });

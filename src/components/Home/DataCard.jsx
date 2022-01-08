@@ -25,8 +25,9 @@ const DataCard = ({ data }) => {
     return str.length > mx ? str.slice(0, mx) + "..." : str;
   };
 
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString() + ` (${new Date(date).toDateString()})`;
+  const formatDate = (date) => new Date(date).toLocaleDateString();
+
+  const formatDateWithDay = (date) => new Date(date).toDateString();
 
   if (!link) return null;
   return (
@@ -54,7 +55,7 @@ const DataCard = ({ data }) => {
         handleClose={handleCloseDialog}
         data={data.data[0]}
         image={link.href}
-        functions={{ formatDate }}
+        functions={{ formatDate, formatDateWithDay }}
       />
     </Grid>
   );

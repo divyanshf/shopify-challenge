@@ -26,6 +26,7 @@ const CardDialog = ({ data, image, open, handleClose, functions }) => {
           <Event sx={{ mr: 1 }} color="primary" />
           <Typography color="text.disabled">
             {functions.formatDate(data.date_created)}
+            {` (${functions.formatDateWithDay(data.date_created)})`}
           </Typography>
         </Box>
       </DialogContent>

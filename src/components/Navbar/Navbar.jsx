@@ -23,6 +23,7 @@ const Navbar = ({ handleListUpdate, setLoading, setError, loading }) => {
   const theme = useTheme();
   const [mode, toggleMode] = useContext(ThemeModeContext);
   const [isSearch, setIsSearch] = useState(false);
+  const [top, setTop] = useState(true);
 
   const toggleSearchState = () => {
     if (isSearch) setDebounce("");
@@ -57,20 +58,39 @@ const Navbar = ({ handleListUpdate, setLoading, setError, loading }) => {
       });
   }, [search]);
 
+  // Use effect
+  useEffect(() => {
+    // if (mainRef && mainRef.current) {
+    // }
+    window.addEventListener("scroll", handleScoll);
+    return () => window.removeEventListener("scroll", handleScoll);
+  }, []);
+
+  // Handle scroll change
+  const handleScoll = (e) => {
+    if (window.pageYOffset === 0) setTop(true);
+    else setTop(false);
+  };
+
   return (
     <AppBar
       position="sticky"
       elevation={0}
-      sx={{ padding: 1, backgroundColor: "transparent" }}
+      sx={{
+        padding: top ? 0 : 1,
+        backgroundColor: "transparent",
+        transition: "0.5s ease",
+      }}
     >
       <Toolbar
         sx={(theme) => ({
           position: "relative",
           backgroundColor: theme.palette.background.paper,
-          borderRadius: 2,
+          borderRadius: top ? 0 : 2,
           color: theme.palette.text.primary,
           padding: 1,
           boxShadow: 4,
+          transition: "0.5s ease",
         })}
       >
         <Grid container justifyContent="space-between" alignItems="center">

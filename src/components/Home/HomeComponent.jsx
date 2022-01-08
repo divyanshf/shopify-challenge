@@ -1,3 +1,4 @@
+import { SettingsPowerOutlined } from "@mui/icons-material";
 import { Button, CircularProgress, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState, useEffect, useRef } from "react";
@@ -58,6 +59,7 @@ const HomeComponent = () => {
   const handleScoll = (e) => {
     if (autoGetMore) return;
     const top = window.pageYOffset;
+
     const windowHeight = window.innerHeight;
     const docHeight = Math.max(
       document.body.scrollHeight,
