@@ -1,18 +1,25 @@
-import { SettingsPowerOutlined } from "@mui/icons-material";
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { AutoAwesomeMosaic, SettingsPowerOutlined } from "@mui/icons-material";
+import {
+  Button,
+  CircularProgress,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { customCall, searchAPI } from "../../controllers/api";
 import ErrorComponent from "../Misc/Error";
 import LoadingComponent from "../Misc/Loading";
 import WaitComponent from "../Misc/Wait";
 import Navbar from "../Navbar/Navbar";
 import Collection from "./Collection";
+import { UserOptions } from "../../contexts/UserOptions";
 
 const HomeComponent = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [autoGetMore, setAutoGetMore] = useState(false);
+  const [options] = useContext(UserOptions);
+  const [getMore, setGetMore] = useState(false);
   const [getMoreLoading, setGetMoreLoading] = useState(false);
   const [nextlink, setNextLink] = useState("");
   const [error, setError] = useState("");
@@ -26,13 +33,13 @@ const HomeComponent = () => {
         .then((res) => {
           handleImageListUpdate(res.data);
           setError("");
-          setAutoGetMore(false);
+          setGetMore(false);
           setGetMoreLoading(false);
         })
         .catch((e) => {
           console.log(e);
           setError(e.message);
-          setAutoGetMore(false);
+          setGetMore(false);
           setGetMoreLoading(false);
         });
     }
@@ -57,7 +64,7 @@ const HomeComponent = () => {
 
   // Handle scroll change
   const handleScoll = (e) => {
-    if (autoGetMore) return;
+    if (getMore) return;
     const top = window.pageYOffset;
 
     const windowHeight = window.innerHeight;
@@ -72,7 +79,7 @@ const HomeComponent = () => {
     const rem = docHeight - windowHeight;
     const perc = top / rem;
     if (perc > 0.8) {
-      setAutoGetMore(true);
+      setGetMore(true);
     }
   };
 
@@ -80,15 +87,17 @@ const HomeComponent = () => {
   useEffect(() => {
     // if (mainRef && mainRef.current) {
     // }
-    document.addEventListener("scroll", handleScoll);
+    if (options.scrollData) {
+      document.addEventListener("scroll", handleScoll);
+    }
     return () => document.removeEventListener("scroll", handleScoll);
-  }, []);
+  }, [options.scrollData]);
 
   useEffect(() => {
-    if (autoGetMore) {
+    if (getMore) {
       handleGetMore();
     }
-  }, [autoGetMore]);
+  }, [getMore]);
 
   return (
     <Box ref={mainRef}>
@@ -97,7 +106,20 @@ const HomeComponent = () => {
         setLoading={setLoading}
         loading={loading}
         setError={setError}
-      />
+      >
+        {loading && (
+          <LinearProgress
+            color="success"
+            sx={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              overflow: "hidden",
+            }}
+          />
+        )}
+      </Navbar>
       {!images.length && !loading ? (
         <ErrorComponent message="Could not find any images. Try a different query!" />
       ) : loading ? (

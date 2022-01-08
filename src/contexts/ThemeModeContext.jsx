@@ -20,8 +20,8 @@ export const ThemeModeProvider = ({ children, themeMode }) => {
 
   // Toggle Theme
   const toggleMode = () => {
+    localStorage.setItem("mode", mode === "light" ? "dark" : "light");
     setTempMode((prev) => {
-      localStorage.setItem("mode", themeMode === "light" ? "dark" : "light");
       return prev === "light" ? "dark" : "light";
     });
     setOpen(true);

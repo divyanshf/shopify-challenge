@@ -1,4 +1,10 @@
-import { Close, DarkMode, LightMode, Search } from "@mui/icons-material";
+import {
+  Close,
+  DarkMode,
+  LightMode,
+  Search,
+  Settings,
+} from "@mui/icons-material";
 import {
   AppBar,
   Grid,
@@ -10,20 +16,22 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { orange, yellow } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ThemeModeContext } from "../../contexts/ThemeModeContext";
 import { searchAPI } from "../../controllers/api";
+import DrawerComponent from "../Drawer/Drawer";
 
-const Navbar = ({ handleListUpdate, setLoading, setError, loading }) => {
+const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   const [search, setSearch] = useState("");
   const [debounce, setDebounce] = useState("");
   const theme = useTheme();
-  const [mode, toggleMode] = useContext(ThemeModeContext);
+  const [drawer, setDrawer] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [top, setTop] = useState(true);
+
+  const handleDrawerOpen = () => setDrawer(true);
+  const handleDrawerClose = () => setDrawer(false);
 
   const toggleSearchState = () => {
     if (isSearch) setDebounce("");
@@ -160,30 +168,16 @@ const Navbar = ({ handleListUpdate, setLoading, setError, loading }) => {
                 />
               </Box>
             )}
-            <Tooltip title={mode === "light" ? "Dark Theme" : "Light Theme"}>
-              <IconButton onClick={toggleMode}>
-                {mode === "light" ? (
-                  <DarkMode sx={{ color: yellow[800] }} />
-                ) : (
-                  <LightMode sx={{ color: orange[500] }} />
-                )}
+            <Tooltip title="Settings">
+              <IconButton onClick={handleDrawerOpen}>
+                <Settings />
               </IconButton>
             </Tooltip>
           </Grid>
         </Grid>
-        {loading && (
-          <LinearProgress
-            color="success"
-            sx={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              width: "100%",
-              overflow: "hidden",
-            }}
-          />
-        )}
       </Toolbar>
+      <DrawerComponent open={drawer} handleClose={handleDrawerClose} />
+      {children}
     </AppBar>
   );
 };

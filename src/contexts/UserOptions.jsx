@@ -4,7 +4,13 @@ export const UserOptions = createContext();
 
 export const UserOptionsProvider = ({ children }) => {
   const getSettings = () => {
-    return JSON.parse(localStorage.get("options"));
+    const temp = localStorage.getItem("options");
+    if (temp) {
+      return JSON.parse(temp);
+    }
+    return {
+      scrollData: true,
+    };
   };
   const [options, setOptions] = useState(getSettings());
 
@@ -17,8 +23,8 @@ export const UserOptionsProvider = ({ children }) => {
   };
 
   return (
-    <UserOptionsProvider.Provider value={[options, changeSettings]}>
+    <UserOptions.Provider value={[options, changeSettings]}>
       {children}
-    </UserOptionsProvider.Provider>
+    </UserOptions.Provider>
   );
 };

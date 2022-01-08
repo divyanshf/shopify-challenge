@@ -8,6 +8,7 @@ import { createTheme, GlobalStyles, ThemeProvider } from "@mui/material";
 import Background from "./components/Background";
 import MainComponent from "./components/MainComponent";
 import { grey } from "@mui/material/colors";
+import { UserOptionsProvider } from "./contexts/UserOptions";
 
 // Themed App
 function ThemedComponent() {
@@ -66,7 +67,9 @@ function ThemedComponent() {
 function App() {
   return (
     <ThemeModeProvider>
-      <ThemedComponent />
+      <UserOptionsProvider>
+        <ThemedComponent />
+      </UserOptionsProvider>
     </ThemeModeProvider>
   );
 }
