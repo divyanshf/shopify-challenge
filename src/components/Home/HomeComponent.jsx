@@ -78,7 +78,7 @@ const HomeComponent = () => {
     );
     const rem = docHeight - windowHeight;
     const perc = top / rem;
-    if (perc > 0.8) {
+    if (perc >= 0.9) {
       setGetMore(true);
     }
   };

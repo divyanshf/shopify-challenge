@@ -16,24 +16,12 @@ import {
   CardActions,
   Tooltip,
   IconButton,
+  Grid,
 } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const CardDialog = ({ data, image, open, handleClose, functions }) => {
-  const getLove = () => {
-    return localStorage.getItem(data.nasa_id);
-  };
-
-  const [love, setLove] = useState(getLove());
-  const [downloaded, setDownloaded] = useState(false);
-
-  const toggleLove = () => {
-    localStorage.setItem(data.nasa_id, !love);
-    setLove((prev) => !prev);
-    console.log(data, image);
-  };
-
   return (
     <Dialog open={open} onClose={handleClose} scroll="body">
       <DialogTitle>{data.title}</DialogTitle>
@@ -43,37 +31,71 @@ const CardDialog = ({ data, image, open, handleClose, functions }) => {
           sx={{ pt: "56.25%", mb: 1, borderRadius: 2 }}
         />
         {data.location && (
-          <Box display="flex" alignItems="center">
-            <LocationOnRounded color="warning" />
-            <Typography variant="caption">{data.location}</Typography>
-          </Box>
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <LocationOnRounded color="warning" />
+              <Typography variant="caption">{data.location}</Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Typography variant="caption" color="text.disabled">
+                {functions.formatDate(data.date_created)}
+              </Typography>
+            </Grid>
+          </Grid>
         )}
-        <CardActions>
-          <Tooltip title={love ? "Unlike" : "Love"}>
-            <IconButton onClick={toggleLove}>
-              {love ? (
-                <Favorite color="error" />
-              ) : (
-                <FavoriteBorder color="error" />
-              )}
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Open Image">
-            <a href={image} target="_blank" rel="noopener noreferrer">
-              <OpenInNew sx={{ color: "primary.main" }} />
-            </a>
-          </Tooltip>
+        <Divider sx={{ mt: 1 }} />
+        <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box>
+            <Tooltip title={data.love ? "Unlike" : "Love"}>
+              <IconButton onClick={functions.toggleLove}>
+                {data.love ? (
+                  <Favorite color="error" />
+                ) : (
+                  <FavoriteBorder color="error" />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Share">
+              <IconButton onClick={functions.toggleLove}>
+                {data.love ? (
+                  <Favorite color="error" />
+                ) : (
+                  <FavoriteBorder color="error" />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box>
+            <Tooltip title="Open Image">
+              <a href={image} target="_blank" rel="noopener noreferrer">
+                <OpenInNew sx={{ color: "primary.main" }} />
+              </a>
+            </Tooltip>
+          </Box>
         </CardActions>
         <Divider sx={{ mb: 1 }} />
         <Typography color="text.disabled">{data.description}</Typography>
-        <Divider sx={{ my: 2 }} />
-        <Box display="flex" alignItems="flex-start">
+        {/* <Box display="flex" alignItems="flex-start">
           <Event sx={{ mr: 1 }} color="primary" />
           <Typography color="text.disabled">
             {functions.formatDate(data.date_created)}
             {` (${functions.formatDateWithDay(data.date_created)})`}
           </Typography>
-        </Box>
+        </Box> */}
       </DialogContent>
     </Dialog>
   );

@@ -5,8 +5,8 @@ const Collection = ({ images }) => {
   return (
     <Container>
       <Grid container>
-        {images.map((i, k) => (
-          <DataCard data={i} key={k} />
+        {images.map((i) => (
+          <DataCard data={i} key={i.data[0].nasa_id} />
         ))}
       </Grid>
     </Container>

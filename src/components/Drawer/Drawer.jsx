@@ -42,7 +42,7 @@ const DrawerComponent = ({ open, handleClose }) => {
           </ListItem>
           <Divider />
           <ListItem>
-            <Typography sx={{ fontSize: 18, width: "100%" }}>
+            <Typography sx={{ fontSize: 16, width: "100%" }}>
               Dark Theme
             </Typography>
             <Switch
@@ -53,8 +53,8 @@ const DrawerComponent = ({ open, handleClose }) => {
           </ListItem>
           <Divider />
           <ListItem>
-            <Typography sx={{ fontSize: 18, width: "100%" }}>
-              Get Data on Scroll
+            <Typography sx={{ fontSize: 16, width: "100%" }}>
+              Load Data on Scroll
             </Typography>
             <Switch
               checked={options.scrollData}

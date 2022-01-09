@@ -53,7 +53,7 @@ export const ThemeModeProvider = ({ children, themeMode }) => {
       setMode(tempMode);
       setTimeout(() => {
         setOpen(false);
-      }, 1000);
+      }, 500);
     }, 1000);
     return () => clearTimeout(timeout);
   }, [tempMode]);

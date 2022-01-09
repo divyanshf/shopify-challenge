@@ -20,12 +20,16 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { searchAPI } from "../../controllers/api";
+import useQuery from "../../hooks/QueryParams";
 import DrawerComponent from "../Drawer/Drawer";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
-  const [search, setSearch] = useState("");
-  const [debounce, setDebounce] = useState("");
   const theme = useTheme();
+  const query = useQuery();
+  const navigate = useNavigate();
+  const [search, setSearch] = useState(query.get("search") || "");
+  const [debounce, setDebounce] = useState(query.get("search") || "");
   const [drawer, setDrawer] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [top, setTop] = useState(true);
@@ -43,18 +47,7 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
     setDebounce(e.target.value);
   };
 
-  // Handle Debounce
-  useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setSearch(debounce);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [debounce]);
-
-  // Handle API call
-  useEffect(() => {
-    handleListUpdate({});
+  const handleSearch = () => {
     searchAPI(search)
       .then((res) => {
         handleListUpdate(res.data);
@@ -64,12 +57,26 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
         console.log(e);
         setError(e.message);
       });
+  };
+
+  // Handle Debounce
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setSearch(debounce);
+      navigate("/?search=" + debounce);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [debounce]);
+
+  // Handle API call
+  useEffect(() => {
+    handleListUpdate({});
+    handleSearch();
   }, [search]);
 
   // Use effect
   useEffect(() => {
-    // if (mainRef && mainRef.current) {
-    // }
     window.addEventListener("scroll", handleScoll);
     return () => window.removeEventListener("scroll", handleScoll);
   }, []);
