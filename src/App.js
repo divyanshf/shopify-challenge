@@ -9,6 +9,10 @@ import Background from "./components/Background";
 import MainComponent from "./components/MainComponent";
 import { grey } from "@mui/material/colors";
 import { UserOptionsProvider } from "./contexts/UserOptions";
+import AOS from "aos";
+
+// AOS
+AOS.init();
 
 // Themed App
 function ThemedComponent() {

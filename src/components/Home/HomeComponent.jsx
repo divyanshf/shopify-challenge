@@ -1,8 +1,15 @@
-import { AutoAwesomeMosaic, SettingsPowerOutlined } from "@mui/icons-material";
+import {
+  AutoAwesomeMosaic,
+  KeyboardArrowUp,
+  SettingsPowerOutlined,
+} from "@mui/icons-material";
 import {
   Button,
   CircularProgress,
+  Grow,
+  IconButton,
   LinearProgress,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -12,7 +19,7 @@ import ErrorComponent from "../Misc/Error";
 import LoadingComponent from "../Misc/Loading";
 import WaitComponent from "../Misc/Wait";
 import Navbar from "../Navbar/Navbar";
-import Collection from "./Collection";
+import Collection from "./Data/Collection";
 import { UserOptions } from "../../contexts/UserOptions";
 
 const HomeComponent = () => {
@@ -64,8 +71,10 @@ const HomeComponent = () => {
 
   // Handle scroll change
   const handleScoll = (e) => {
-    if (getMore) return;
     const top = window.pageYOffset;
+
+    if (!options.scrollData) return;
+    if (getMore) return;
 
     const windowHeight = window.innerHeight;
     const docHeight = Math.max(
@@ -91,7 +100,7 @@ const HomeComponent = () => {
       document.addEventListener("scroll", handleScoll);
     }
     return () => document.removeEventListener("scroll", handleScoll);
-  }, [options.scrollData]);
+  }, []);
 
   useEffect(() => {
     if (getMore) {
@@ -135,6 +144,7 @@ const HomeComponent = () => {
         </Box>
       ) : null}
       {/* {error && <ErrorComponent message={error} />} */}
+      
     </Box>
   );
 };

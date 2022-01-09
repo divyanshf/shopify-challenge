@@ -1,24 +1,17 @@
-import {
-  Close,
-  DarkMode,
-  LightMode,
-  Search,
-  Settings,
-} from "@mui/icons-material";
+import { Close, Search, Settings } from "@mui/icons-material";
 import {
   AppBar,
   Grid,
   IconButton,
   InputBase,
-  LinearProgress,
   Toolbar,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { searchAPI } from "../../controllers/api";
 import useQuery from "../../hooks/QueryParams";
 import DrawerComponent from "../Drawer/Drawer";
@@ -28,6 +21,7 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   const theme = useTheme();
   const query = useQuery();
   const navigate = useNavigate();
+  const big = useMediaQuery(`(min-width:${theme.breakpoints.values.sm}px)`);
   const [search, setSearch] = useState(query.get("search") || "");
   const [debounce, setDebounce] = useState(query.get("search") || "");
   const [drawer, setDrawer] = useState(false);
@@ -38,13 +32,17 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   const handleDrawerClose = () => setDrawer(false);
 
   const toggleSearchState = () => {
-    if (isSearch) setDebounce("");
+    // if (isSearch) setDebounce("");
     setIsSearch((prev) => !prev);
   };
 
   // Handle query change
   const handleQueryChange = (e) => {
     setDebounce(e.target.value);
+  };
+
+  const handleNavBrand = () => {
+    setDebounce("");
   };
 
   const handleSearch = () => {
@@ -109,34 +107,37 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
         })}
       >
         <Grid container justifyContent="space-between" alignItems="center">
-          <Grid item>
-            <Link
-              to="/"
-              style={{
-                textDecoration: "none",
-                color: theme.palette.text.primary,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={process.env.PUBLIC_URL + "/logo192.png"}
-                alt="Spacestagram"
-                style={{ width: "50px" }}
-              />
-              <Typography variant="h6" sx={{ ml: 1 }}>
-                Spacestagram
-              </Typography>
-            </Link>
+          <Grid item xs={big ? "auto" : isSearch ? "auto" : true}>
+            {isSearch && !big ? null : (
+              <Box
+                onClick={handleNavBrand}
+                style={{
+                  textDecoration: "none",
+                  color: theme.palette.text.primary,
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + "/logo192.png"}
+                  alt="Spacestagram"
+                  style={{ width: "50px" }}
+                />
+                <Typography variant="h6" sx={{ ml: 1 }}>
+                  Spinterest
+                </Typography>
+              </Box>
+            )}
           </Grid>
           <Grid
             item
             display="flex"
             alignItems="center"
             justifyContent="flex-end"
-            xs={true}
+            xs={!big && isSearch ? 12 : "auto"}
           >
-            {!isSearch ? (
+            {!isSearch && !big ? (
               <Tooltip title="Search" sx={{ mr: 1 }}>
                 <IconButton onClick={toggleSearchState}>
                   <Search />
@@ -147,16 +148,12 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
                 display="flex"
                 alignItems="center"
                 justifyContent="flex-end"
-                sx={(theme) => ({
+                sx={{
                   width: "100%",
-                  minWidth: "5ch",
-                  maxWidth: "20ch",
-                  mr: 1,
                   backgroundColor: "rgba(255,255,255,0.25)",
                   borderRadius: 2,
-                  px: 2,
-                  py: 1,
-                })}
+                  mr: 1,
+                }}
               >
                 <InputBase
                   value={debounce}
@@ -165,26 +162,40 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
                   placeholder="Search . . ."
                   sx={{
                     width: "100%",
+                    "& .MuiInputBase-input": {
+                      width: big ? "25ch" : "100%",
+                      px: 2,
+                      py: 1,
+                      transition: "0.3s ease",
+                      "&:focus": {
+                        width: big ? "30ch" : "100%",
+                      },
+                    },
                   }}
                 />
-                <Close
-                  sx={{
-                    "&:hover": { cursor: "pointer" },
-                  }}
-                  onClick={toggleSearchState}
-                />
+                {!big && (
+                  <Close
+                    sx={{
+                      p: 1,
+                      "&:hover": { cursor: "pointer" },
+                    }}
+                    onClick={toggleSearchState}
+                  />
+                )}
               </Box>
             )}
-            <Tooltip title="Settings">
-              <IconButton onClick={handleDrawerOpen}>
-                <Settings />
-              </IconButton>
-            </Tooltip>
+            {isSearch && !big ? null : (
+              <Tooltip title="Settings">
+                <IconButton onClick={handleDrawerOpen}>
+                  <Settings />
+                </IconButton>
+              </Tooltip>
+            )}
           </Grid>
         </Grid>
+        {children}
       </Toolbar>
       <DrawerComponent open={drawer} handleClose={handleDrawerClose} />
-      {children}
     </AppBar>
   );
 };

@@ -5,33 +5,35 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Divider,
   Grid,
   IconButton,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, styled } from "@mui/system";
 import { useState } from "react";
 import CardDialog from "./CardDialog";
+import LoveComponent from "./Love";
+import ShareComponent from "./Share";
 
-const getLove = (nasa_id) => {
-  return localStorage.getItem(nasa_id);
-};
+const StyledBox = styled(Box)({
+  maxWidth: 500,
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "flex-end",
+  transition: "0.3s ease",
+  "&:hover": {},
+});
 
 const DataCard = ({ data }) => {
   const [open, setOpen] = useState(false);
-  const [love, setLove] = useState(getLove(data.data[0].nasa_id));
   const link =
     data && data.links ? data.links.find((o) => o.render === "image") : null;
 
   const handleOpenDialog = () => setOpen(true);
   const handleCloseDialog = () => setOpen(false);
-
-  const toggleLove = () => {
-    localStorage.setItem(data.data[0].nasa_id, !love);
-    setLove((prev) => !prev);
-  };
 
   const truncate = (str, mx = 100) => {
     return str.length > mx ? str.slice(0, mx) + "..." : str;
@@ -44,6 +46,7 @@ const DataCard = ({ data }) => {
   if (!link) return null;
   return (
     <Grid
+      data-aos="fade-up"
       item
       xs={12}
       sx={{
@@ -54,20 +57,7 @@ const DataCard = ({ data }) => {
         alignItems: "center",
       }}
     >
-      <Box
-        sx={{
-          maxWidth: 500,
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          transition: "0.3s ease",
-          "&:hover": {
-            transform: "scale(1.01)",
-          },
-        }}
-      >
+      <StyledBox>
         <Card
           elevation={0}
           sx={(theme) => ({
@@ -90,15 +80,8 @@ const DataCard = ({ data }) => {
           </CardContent> */}
           </CardActionArea>
           <CardActions>
-            <Tooltip title={love ? "Unlike" : "Love"}>
-              <IconButton onClick={toggleLove}>
-                {love ? (
-                  <Favorite color="error" />
-                ) : (
-                  <FavoriteBorder color="error" />
-                )}
-              </IconButton>
-            </Tooltip>
+            <LoveComponent data={data.data[0]} />
+            <ShareComponent data={data.data[0]} />
           </CardActions>
         </Card>
         <Typography variant="caption" color="text.disabled">
@@ -107,11 +90,11 @@ const DataCard = ({ data }) => {
         <CardDialog
           open={open}
           handleClose={handleCloseDialog}
-          data={{ ...data.data[0], love }}
+          data={data.data[0]}
           image={link.href}
-          functions={{ formatDate, formatDateWithDay, getLove, toggleLove }}
+          functions={{ formatDate, formatDateWithDay }}
         />
-      </Box>
+      </StyledBox>
     </Grid>
   );
 };
