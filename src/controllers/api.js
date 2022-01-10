@@ -7,7 +7,6 @@ export const searchAPI = async (query, filters) => {
     url += "&" + f.key + "=" + f.value;
   });
   url += "&q=" + query;
-  console.log(url);
   const res = await axios.get(url);
   return res;
 };

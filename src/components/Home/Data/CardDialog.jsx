@@ -23,15 +23,19 @@ import { Link } from "react-router-dom";
 import LoveComponent from "./Love";
 import ShareComponent from "./Share";
 
-const CardDialog = ({ data, image, open, handleClose, functions }) => {
+const CardDialog = ({ data, link, type, open, handleClose, functions }) => {
   return (
     <Dialog open={open} onClose={handleClose} scroll="body">
       <DialogTitle>{data.title}</DialogTitle>
       <DialogContent>
-        <CardMedia
-          image={image}
-          sx={{ pt: "56.25%", mb: 1, borderRadius: 2 }}
-        />
+        {type === "image" ? (
+          <CardMedia
+            image={link}
+            sx={{ pt: "56.25%", mb: 1, borderRadius: 2 }}
+          />
+        ) : (
+          <audio controls src={link} style={{ width: "100%" }} />
+        )}
         {data.location && (
           <Grid container>
             <Grid
@@ -54,8 +58,8 @@ const CardDialog = ({ data, image, open, handleClose, functions }) => {
             <ShareComponent data={data} />
           </Box>
           <Box>
-            <Tooltip title="Open Image">
-              <a href={image} target="_blank" rel="noopener noreferrer">
+            <Tooltip title="Open link">
+              <a href={link} target="_blank" rel="noopener noreferrer">
                 <OpenInNew sx={{ color: "primary.main" }} />
               </a>
             </Tooltip>

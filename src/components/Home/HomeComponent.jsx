@@ -24,7 +24,6 @@ const HomeComponent = () => {
   const [getMore, setGetMore] = useState(false);
   const [getMoreLoading, setGetMoreLoading] = useState(false);
   const [nextlink, setNextLink] = useState("");
-  const [openFilters, setOpenFilters] = useState(false);
   const [error, setError] = useState("");
   const mainRef = useRef(null);
 
@@ -88,9 +87,6 @@ const HomeComponent = () => {
     }
   };
 
-  // Filters drawer
-  const handleOpenFilters = () => setOpenFilters(true);
-  const handleCloseFilters = () => setOpenFilters(false);
 
   // Use effect
   useEffect(() => {
@@ -129,15 +125,6 @@ const HomeComponent = () => {
           />
         )}
       </Navbar>
-      <Tooltip title="Open Filters">
-        <IconButton onClick={handleOpenFilters}>
-          <FilterList />
-        </IconButton>
-      </Tooltip>
-      <FilterDrawerComponent
-        open={openFilters}
-        handleClose={handleCloseFilters}
-      />
       {!images.length && !loading ? (
         <ErrorComponent message="Could not find any images. Try a different query!" />
       ) : loading ? (

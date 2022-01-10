@@ -1,4 +1,4 @@
-import { Close, Search, Settings } from "@mui/icons-material";
+import { Close, FilterList, Search, Settings } from "@mui/icons-material";
 import {
   AppBar,
   Grid,
@@ -17,6 +17,7 @@ import useQuery from "../../hooks/QueryParams";
 import DrawerComponent from "../Drawer/SettingsDrawer";
 import { useNavigate } from "react-router-dom";
 import { FilterOptions } from "../../contexts/FilterOptions";
+import FilterDrawerComponent from "../Drawer/FiltersDrawer";
 
 const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   const theme = useTheme();
@@ -27,11 +28,16 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   const [search, setSearch] = useState(query.get("search") || "");
   const [debounce, setDebounce] = useState(query.get("search") || "");
   const [drawer, setDrawer] = useState(false);
+  const [openFilters, setOpenFilters] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [top, setTop] = useState(true);
 
   const handleDrawerOpen = () => setDrawer(true);
   const handleDrawerClose = () => setDrawer(false);
+
+  // Filters drawer
+  const handleOpenFilters = () => setOpenFilters(true);
+  const handleCloseFilters = () => setOpenFilters(false);
 
   const toggleSearchState = () => {
     // if (isSearch) setDebounce("");
@@ -48,7 +54,6 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   };
 
   const handleSearch = () => {
-    console.log(filters);
     searchAPI(search, filters)
       .then((res) => {
         handleListUpdate(res.data);
@@ -186,6 +191,19 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
                   />
                 )}
               </Box>
+            )}
+            {isSearch && !big ? null : (
+              <>
+                <Tooltip title="Open Filters">
+                  <IconButton onClick={handleOpenFilters}>
+                    <FilterList />
+                  </IconButton>
+                </Tooltip>
+                <FilterDrawerComponent
+                  open={openFilters}
+                  handleClose={handleCloseFilters}
+                />
+              </>
             )}
             {isSearch && !big ? null : (
               <Tooltip title="Settings">

@@ -9,9 +9,12 @@ import {
   IconButton,
   Tooltip,
   Typography,
+  useTheme,
+  alpha,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import CardDialog from "./CardDialog";
 import LoveComponent from "./Love";
 import ShareComponent from "./Share";
@@ -28,10 +31,10 @@ const StyledBox = styled(Box)({
 });
 
 const DataCard = ({ data }) => {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const link =
-    data && data.links ? data.links.find((o) => o.render === "image") : null;
-
+  const [audioUrl, setAudioUrl] = useState("");
+  const type = data.data[0].media_type;
   const handleOpenDialog = () => setOpen(true);
   const handleCloseDialog = () => setOpen(false);
 
@@ -43,7 +46,25 @@ const DataCard = ({ data }) => {
 
   const formatDateWithDay = (date) => new Date(date).toDateString();
 
-  if (!link) return null;
+  const link =
+    data && data.links ? data.links.find((o) => o.render === "image") : null;
+
+  const fetchAudioUrl = async () => {
+    const res = await axios.get(data.href);
+    return res.data;
+  };
+
+  useEffect(() => {
+    if (type === "audio")
+      fetchAudioUrl()
+        .then((res) => {
+          setAudioUrl(res[0]);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+  }, []);
+
   return (
     <Grid
       data-aos="fade-up"
@@ -68,18 +89,26 @@ const DataCard = ({ data }) => {
         >
           <CardActionArea
             onClick={handleOpenDialog}
-            sx={(theme) => ({ background: theme.palette.background.default })}
+            sx={(theme) => ({
+              background: theme.palette.background.default,
+              p: 1,
+            })}
           >
-            <CardContent>
-              <Typography variant="h6">
-                {truncate(data.data[0].title, 50)}
-              </Typography>
-            </CardContent>
-            <CardMedia image={link.href} sx={{ pt: "55.25%" }} />
-            {/* <CardContent>
-          </CardContent> */}
+            <Typography variant="h6" sx={{ my: 1 }}>
+              {truncate(data.data[0].title, 50)}
+            </Typography>
+            {type === "audio" ? (
+              <audio src={audioUrl} controls style={{ width: "100%" }} />
+            ) : (
+              <CardMedia
+                image={link.href}
+                sx={{ pt: "55.25%", borderRadius: 2 }}
+              />
+            )}
           </CardActionArea>
-          <CardActions>
+          <CardActions
+            sx={{ display: "flex", justifyContent: "space-between" }}
+          >
             <LoveComponent data={data.data[0]} />
             <ShareComponent data={data.data[0]} />
           </CardActions>
@@ -91,8 +120,9 @@ const DataCard = ({ data }) => {
           open={open}
           handleClose={handleCloseDialog}
           data={data.data[0]}
-          image={link.href}
+          link={type === "image" ? link.href : audioUrl}
           functions={{ formatDate, formatDateWithDay }}
+          type={type}
         />
       </StyledBox>
     </Grid>
