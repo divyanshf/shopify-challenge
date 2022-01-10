@@ -6,7 +6,9 @@ import { useState } from "react";
 const ShareComponent = ({ data }) => {
   const [open, setOpen] = useState(false);
   const copy = () => {
-    navigator.clipboard.writeText(`localhost:8080/?search=${data.nasa_id}`);
+    navigator.clipboard.writeText(
+      `localhost:8080/shopify-challenge/?search=${data.nasa_id}`
+    );
     handleOpen();
   };
   const handleOpen = () => setOpen(true);

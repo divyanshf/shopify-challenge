@@ -11,15 +11,17 @@ import {
   useTheme,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { searchAPI } from "../../controllers/api";
 import useQuery from "../../hooks/QueryParams";
-import DrawerComponent from "../Drawer/Drawer";
+import DrawerComponent from "../Drawer/SettingsDrawer";
 import { useNavigate } from "react-router-dom";
+import { FilterOptions } from "../../contexts/FilterOptions";
 
 const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   const theme = useTheme();
   const query = useQuery();
+  const [filters] = useContext(FilterOptions);
   const navigate = useNavigate();
   const big = useMediaQuery(`(min-width:${theme.breakpoints.values.sm}px)`);
   const [search, setSearch] = useState(query.get("search") || "");
@@ -46,7 +48,8 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
   };
 
   const handleSearch = () => {
-    searchAPI(search)
+    console.log(filters);
+    searchAPI(search, filters)
       .then((res) => {
         handleListUpdate(res.data);
         setError("");
@@ -59,7 +62,6 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
 
   // Handle Debounce
   useEffect(() => {
-    setLoading(true);
     const timer = setTimeout(() => {
       setSearch(debounce);
       navigate("/?search=" + debounce);
@@ -69,9 +71,10 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
 
   // Handle API call
   useEffect(() => {
+    setLoading(true);
     handleListUpdate({});
     handleSearch();
-  }, [search]);
+  }, [search, filters]);
 
   // Use effect
   useEffect(() => {

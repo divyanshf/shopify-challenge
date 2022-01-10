@@ -10,6 +10,7 @@ import MainComponent from "./components/MainComponent";
 import { grey } from "@mui/material/colors";
 import { UserOptionsProvider } from "./contexts/UserOptions";
 import AOS from "aos";
+import { FilterOptionsProvider } from "./contexts/FilterOptions";
 
 // AOS
 AOS.init();
@@ -72,7 +73,9 @@ function App() {
   return (
     <ThemeModeProvider>
       <UserOptionsProvider>
-        <ThemedComponent />
+        <FilterOptionsProvider>
+          <ThemedComponent />
+        </FilterOptionsProvider>
       </UserOptionsProvider>
     </ThemeModeProvider>
   );

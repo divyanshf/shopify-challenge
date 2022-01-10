@@ -3,7 +3,7 @@ import HomeComponent from "./Home/HomeComponent";
 
 const MainComponent = () => {
   return (
-    <Router>
+    <Router basename="/shopify-challenge">
       <Routes>
         <Route path="/" exact element={<HomeComponent />} />
       </Routes>

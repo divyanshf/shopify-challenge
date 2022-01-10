@@ -1,26 +1,21 @@
-import {
-  AutoAwesomeMosaic,
-  KeyboardArrowUp,
-  SettingsPowerOutlined,
-} from "@mui/icons-material";
+import { FilterList } from "@mui/icons-material";
 import {
   Button,
-  CircularProgress,
-  Grow,
   IconButton,
   LinearProgress,
   Tooltip,
-  Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState, useEffect, useRef, useContext } from "react";
-import { customCall, searchAPI } from "../../controllers/api";
+import { customCall } from "../../controllers/api";
 import ErrorComponent from "../Misc/Error";
 import LoadingComponent from "../Misc/Loading";
 import WaitComponent from "../Misc/Wait";
 import Navbar from "../Navbar/Navbar";
 import Collection from "./Data/Collection";
 import { UserOptions } from "../../contexts/UserOptions";
+import FilterDrawerComponent from "../Drawer/FiltersDrawer";
 
 const HomeComponent = () => {
   const [images, setImages] = useState([]);
@@ -29,6 +24,7 @@ const HomeComponent = () => {
   const [getMore, setGetMore] = useState(false);
   const [getMoreLoading, setGetMoreLoading] = useState(false);
   const [nextlink, setNextLink] = useState("");
+  const [openFilters, setOpenFilters] = useState(false);
   const [error, setError] = useState("");
   const mainRef = useRef(null);
 
@@ -92,6 +88,10 @@ const HomeComponent = () => {
     }
   };
 
+  // Filters drawer
+  const handleOpenFilters = () => setOpenFilters(true);
+  const handleCloseFilters = () => setOpenFilters(false);
+
   // Use effect
   useEffect(() => {
     // if (mainRef && mainRef.current) {
@@ -129,6 +129,15 @@ const HomeComponent = () => {
           />
         )}
       </Navbar>
+      <Tooltip title="Open Filters">
+        <IconButton onClick={handleOpenFilters}>
+          <FilterList />
+        </IconButton>
+      </Tooltip>
+      <FilterDrawerComponent
+        open={openFilters}
+        handleClose={handleCloseFilters}
+      />
       {!images.length && !loading ? (
         <ErrorComponent message="Could not find any images. Try a different query!" />
       ) : loading ? (
@@ -144,7 +153,6 @@ const HomeComponent = () => {
         </Box>
       ) : null}
       {/* {error && <ErrorComponent message={error} />} */}
-      
     </Box>
   );
 };
