@@ -16,8 +16,8 @@ const Collection = ({ images }) => {
   return (
     <Container>
       <Grid container>
-        {images.map((i) => (
-          <DataCard data={i} key={i.data[0].nasa_id} />
+        {images.map((i, k) => (
+          <DataCard data={i} key={k} />
         ))}
       </Grid>
       <Box position="fixed" sx={{ right: "1rem", bottom: "1rem" }}>

@@ -35,14 +35,8 @@ export const FilterOptionsProvider = ({ children }) => {
     },
   ]);
 
-  const changeFilters = (key, value) => {
-    setFilters((prev) => {
-      return prev.map((o) => {
-        if (o.key !== key) return o;
-        o.value = value;
-        return o;
-      });
-    });
+  const changeFilters = (newFilters) => {
+    setFilters(newFilters);
   };
 
   return (

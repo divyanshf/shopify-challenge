@@ -1,7 +1,14 @@
-import { Close, FilterList, Search, Settings } from "@mui/icons-material";
+import {
+  Close,
+  FilterList,
+  Pinterest,
+  Search,
+  Settings,
+} from "@mui/icons-material";
 import {
   AppBar,
   Grid,
+  Grow,
   IconButton,
   InputBase,
   Toolbar,
@@ -9,6 +16,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  alpha,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
@@ -127,13 +135,15 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
                   cursor: "pointer",
                 }}
               >
-                <img
-                  src={process.env.PUBLIC_URL + "/logo192.png"}
-                  alt="Spacestagram"
-                  style={{ width: "50px" }}
-                />
-                <Typography variant="h6" sx={{ ml: 1 }}>
-                  Spinterest
+                <Typography
+                  variant="h5"
+                  sx={(theme) => ({
+                    ml: 1,
+                    fontFamily: "Montserrat, Roboto, sans-serif",
+                  })}
+                  className="nav-title"
+                >
+                  COSMOS
                 </Typography>
               </Box>
             )}
@@ -152,49 +162,51 @@ const Navbar = ({ handleListUpdate, setLoading, setError, children }) => {
                 </IconButton>
               </Tooltip>
             ) : (
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-end"
-                sx={{
-                  width: "100%",
-                  backgroundColor: "rgba(255,255,255,0.25)",
-                  borderRadius: 2,
-                  mr: 1,
-                }}
-              >
-                <InputBase
-                  value={debounce}
-                  onChange={handleQueryChange}
-                  variant="outlined"
-                  placeholder="Search . . ."
+              <Grow in={true} timeout={500}>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="flex-end"
                   sx={{
                     width: "100%",
-                    "& .MuiInputBase-input": {
-                      width: big ? "25ch" : "100%",
-                      px: 2,
-                      py: 1,
-                      transition: "0.3s ease",
-                      "&:focus": {
-                        width: big ? "30ch" : "100%",
-                      },
-                    },
+                    backgroundColor: "rgba(255,255,255,0.25)",
+                    borderRadius: 2,
+                    mr: 1,
                   }}
-                />
-                {!big && (
-                  <Close
+                >
+                  <InputBase
+                    value={debounce}
+                    onChange={handleQueryChange}
+                    variant="outlined"
+                    placeholder="Search . . ."
                     sx={{
-                      p: 1,
-                      "&:hover": { cursor: "pointer" },
+                      width: "100%",
+                      "& .MuiInputBase-input": {
+                        width: big ? "25ch" : "100%",
+                        px: 2,
+                        py: 1,
+                        transition: "0.3s ease",
+                        "&:focus": {
+                          width: big ? "30ch" : "100%",
+                        },
+                      },
                     }}
-                    onClick={toggleSearchState}
                   />
-                )}
-              </Box>
+                  {!big && (
+                    <Close
+                      sx={{
+                        p: 1,
+                        "&:hover": { cursor: "pointer" },
+                      }}
+                      onClick={toggleSearchState}
+                    />
+                  )}
+                </Box>
+              </Grow>
             )}
             {isSearch && !big ? null : (
               <>
-                <Tooltip title="Open Filters">
+                <Tooltip title="Filters">
                   <IconButton onClick={handleOpenFilters}>
                     <FilterList />
                   </IconButton>

@@ -13,6 +13,7 @@ import {
   Grid,
   MenuItem,
   FormControl,
+  Button,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
@@ -20,9 +21,21 @@ import { FilterOptions } from "../../contexts/FilterOptions";
 
 const FilterDrawerComponent = ({ open, handleClose }) => {
   const [filters, changeFilters] = useContext(FilterOptions);
+  const [filtersCopy, setFiltersCopy] = useState(filters);
 
   const handleSelect = (e) => {
-    changeFilters(e.target.name, e.target.value);
+    setFiltersCopy((prev) => {
+      return prev.map((o) => {
+        if (o.key !== e.target.name) return o;
+        o.value = e.target.value;
+        return o;
+      });
+    });
+  };
+
+  const onSubmit = () => {
+    changeFilters(filtersCopy);
+    handleClose();
   };
 
   return (
@@ -40,7 +53,9 @@ const FilterDrawerComponent = ({ open, handleClose }) => {
           p: 2,
         }}
       >
-        <Typography variant="h6">Filters</Typography>
+        <Typography variant="h6" sx={{ px: 2 }}>
+          Filters
+        </Typography>
         <Grid container>
           {filters.map((f) => {
             return (
@@ -64,6 +79,19 @@ const FilterDrawerComponent = ({ open, handleClose }) => {
               </Grid>
             );
           })}
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <Button variant="contained" color="success" onClick={onSubmit}>
+              Apply
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </Drawer>

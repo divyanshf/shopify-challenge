@@ -31,10 +31,17 @@
   width: 10px;
   margin: auto 0.1rem;
 }
+.nav-title {
+  transition: all 0.5s ease;
+  letter-spacing: 0ch;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
+  }
+  .nav-title:hover {
+    letter-spacing: 0.5ch;
   }
 }
 
