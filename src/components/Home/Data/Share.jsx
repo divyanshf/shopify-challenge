@@ -7,7 +7,7 @@ const ShareComponent = ({ data }) => {
   const [open, setOpen] = useState(false);
   const copy = () => {
     navigator.clipboard.writeText(
-      `localhost:8080/shopify-challenge/?search=${data.nasa_id}`
+      `https://divyanshfalodiya.github.io/shopify-challenge/?search=${data.nasa_id}`
     );
     handleOpen();
   };
